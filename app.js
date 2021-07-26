@@ -1,10 +1,11 @@
+//IMPORTATION DES PLUG-IN
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const path = require('path');
+const path = require('path'); // Accéder au path du serveur
 
-const userRoutes = require('./routes/user');
-const sauceRoutes = require('./routes/sauce');
+const userRoutes = require('./routes/user'); //Importer le router user.js
+const sauceRoutes = require('./routes/sauce'); //Importer le routeur sauce.js
 
 const app = express();
 
@@ -26,9 +27,11 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images'))); // Indique à Express de gérer la ressources 'images' de manière statique
+                                                                    // à chaque requête vers /images
 
-app.use('/api/auth', userRoutes);
-app.use('/api/sauces', sauceRoutes);
+//ROUTEURS                                                                    
+app.use('/api/auth', userRoutes); // utiliser le router de la const userRoutes pour /api/auth
+app.use('/api/sauces', sauceRoutes); // utiliser le router de la const sauceRoutes pour /api/sauces
 
 module.exports = app;
