@@ -1,3 +1,3 @@
 PROJET 6 - CREATION D'UNE API REST
 
-Lien vers le fichier frontend du projet :https://github.com/OpenClassrooms-Student-Center/dwj-projet6
+Lien vers le dossier frontend du projet :https://github.com/OpenClassrooms-Student-Center/dwj-projet6
