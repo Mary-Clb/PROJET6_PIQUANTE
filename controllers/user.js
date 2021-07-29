@@ -3,17 +3,30 @@
 const bcrypt = require('bcrypt'); //Importation du plugin de cryptage
 const User = require('../models/user'); //Importation du modèle 'User'
 const jwt = require('jsonwebtoken'); //Importation du plugin de création de TOKEN
-const obfuscatorEmail = require('obfuscator-email'); //Importation du plugin de masquage de l'adresse mail
 const validate = require('validate-mail'); //Importation du plugin de validation de l'adresse mail (conformité)
+const passwordValidator = require('password-validator');//Importation du plugin de validation de mot de passe
+const obfuscatorEmail = require('obfuscator-email'); //Importation du plugin de masquage de l'adresse mail
+
+
+let schema = new passwordValidator(); 
+//Propriétés du schéma de validation de mot de passe :
+schema
+.is().min(8)                                    // Minimum 8 caractères
+.is().max(100)                                  // Maximum 100 caractères
+.has().uppercase(1)                              // Doit avoir au moins 1 lettre majuscule
+.has().lowercase()                              // Doit avoir des lettres en minuscule
+.has().digits(1)                                // Doit avoir au moins 1 chiffre
+.has().not().spaces()                           // Ne pas avoir d'espaces
+//.is().not().oneOf(['Passw0rd', 'Password123']);
 
 
 //CREATION D'UN COMPTE CLIENT
 exports.signup = (req, res, next) => {
-    const obfuscateEmail = obfuscatorEmail(req.body.email); //Masquage de l'adresse mail dans la BDD
-
-    if (validate(req.body.email)) {    //Si l'adresse mail est valide, on poursuit l'opération
+     
+    if (validate(req.body.email) && schema.validate(req.body.password)) {    //Si l'adresse mail et le mdp sont valides, on poursuit l'opération
     bcrypt.hash(req.body.password, 10) //avec la méthode hash() du plugin BCRYPT pour le mdp
       .then(hash => {
+        const obfuscateEmail = obfuscatorEmail(req.body.email); //Masquage de l'adresse mail dans la BDD
         const user = new User({       //On créé un nouvel user avec le modèle
           email: obfuscateEmail,
           password: hash
@@ -23,8 +36,10 @@ exports.signup = (req, res, next) => {
           .catch(error => res.status(400).json({ error }));
       })
       .catch(error => res.status(500).json({ error }));
-  } else{
-      return res.status(403).json({ message: 'Adresse mail non valide !'}); //Si l'adresse mail est non valide, on retourne un status 403
+  } else if (!validate(req.body.email)) {
+      return res.status(401).json({ message: 'Adresse mail non valide !'}); //Si l'adresse mail est non valide, on retourne un status 403
+  } else if (!schema.validate(req.body.password)) {
+      return res.status(402).json({ message: 'Le mot de passe doit contenir au moins 8 caractères, 1 lettre majuscule et 1 chiffre !'})
   }
 
 };
