@@ -62,7 +62,7 @@ exports.signup = (req, res, next) => {
               userId: user._id,
               token: jwt.sign(    //On utilise la fonction sign() de JWT pour encoder un nouveau TOKEN qui sera renvoyé au front-end
                 { userId: user._id }, //avec l'identifiant de l'utilisateur + une chaine de caractère aléatoire, 
-                'RANDOM_TOKEN_SECRET', //qui seront visible dans DevTools > Network > request Headers > Authorization
+                process.env.AUTH_SECRET, //qui seront visible dans DevTools > Network > request Headers > Authorization
                 { expiresIn: '24h' }
               )
             });

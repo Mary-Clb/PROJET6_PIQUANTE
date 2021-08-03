@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 //IMPORTATION DES PLUG-IN
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,8 +12,7 @@ const sauceRoutes = require('./routes/sauce'); //Importer le routeur sauce.js
 const app = express();
 
 //CONNEXION BDD MONGO DB ATLAS
-mongoose.connect('mongodb+srv://Userproject6:3Sw5BYB8crp2ni@cluster0.gnmii.mongodb.net/Cluster0?retryWrites=true&w=majority',
-//mongoose.connect('mongodb+srv://MaryClb:Maryland1989@cluster0.gnmii.mongodb.net/Cluster0?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://' + process.env.DB_USER + ':' + process.env.DB_USERPWD + '@cluster0.gnmii.mongodb.net/Cluster0?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
